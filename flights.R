@@ -6,26 +6,32 @@ source("multiplot.R")
 alldata <-tbl_df(flights) %>% 
     select(month, dep_time, arr_delay, carrier, origin, dest)
 
-monthi <- 1:4
-deptimei <- c(600,2000)
+# sample inputs
+monthi <- c(1:4)
+deptimei <- c(6,20)
 origini <- "NYC"
 desti <- "ORD"
 
 
-data <- alldata %>% 
-    filter(month %in% monthi, 
-           dep_time >= min(deptimei),
-           dep_time <= max(deptimei),
-           dest == desti)
+dt <- alldata %>% 
+    filter(month >= monthi[1], 
+           month <= monthi[2],
+           dep_time >= deptimei[1] * 100,
+           dep_time <= deptimei[2] * 100)
 
 
-if (origini != "NYC") 
-    data <- data %>% filter(origin == origini)
+if (input$origin != "NYC") 
+    dt <- dt %>% filter(origin == origini)
 
-dtplot <- data %>%    
+if (input$dest != "*Anywhere*")
+    dt <- dt %>% filter(dest == desti)
+
+
+dtplot <- dt %>%    
     group_by(carrier) %>%
     summarize(n = n(),
-              avgArrDelay = mean(arr_delay, na.rm=T))
+              avgArrDelay = mean(arr_delay, na.rm=T)) %>%
+    merge(airlines)
 
 p1 <- ggplot(dtplot, 
        aes(x = reorder(carrier, n), 
@@ -45,5 +51,5 @@ p2 <- ggplot(dtplot,
           y = "average arrival delay (minutes)", 
           title = paste("On-time performance of route", origini, "-", desti))
 
-
+# put two plots side by side
 multiplot(p1, p2, cols=2)
