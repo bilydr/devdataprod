@@ -41,7 +41,7 @@ shinyServer(
                 coord_flip() +
                 labs (x = "Carrier",
                       y = "number of flights", 
-                      title = paste("Market Share of route", input$origin, "-", input$dest))
+                      title = paste("Number of flights on route\n", input$origin, "-", input$dest))
             
             p2 <- ggplot(dtplot, 
                          aes(x = reorder(name, n), 
@@ -50,15 +50,14 @@ shinyServer(
                 coord_flip() +
                 labs (x = "",
                       y = "average arrival delay (minutes)", 
-                      title = paste("On-time performance of route", input$origin, "-", input$dest))
+                      title = paste("On-time performance on route\n", input$origin, "-", input$dest))
             
             
 
             #put the two plots into one graph
 
             multiplot(p1, p2, cols = 2)
-            
-            
+
 
         })
     }
