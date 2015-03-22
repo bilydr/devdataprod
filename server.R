@@ -53,7 +53,9 @@ shinyServer(
                       title = paste("On-time performance of route", input$origin, "-", input$dest))
             
             
+
             #put the two plots into one graph
+
             multiplot(p1, p2, cols = 2)
             
             
